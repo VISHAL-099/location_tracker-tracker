@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+</head>
+<body>
+    <h2>Live Location</h2>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: { lat: 0, lng: 0 }  // Default center
+            });
+
+            fetch('/get_location/my_phone_1')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.latitude && data.longitude) {
+                        var location = { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) };
+                        new google.maps.Marker({
+                            position: location,
+                            map: map
+                        });
+                        map.setCenter(location);
+                    }
+                })
+                .catch(error => console.error("Error fetching location:", error));
+        }
+
+        window.onload = initMap;
+    </script>
+</body>
+</html>
